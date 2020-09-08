@@ -9,29 +9,16 @@ int main(int argc, char **argv){
 	char *input_flag=NULL, *output_flag=NULL;
 	ioFlags(&input_flag, &output_flag, argc, argv);
 
-	FILE *file;
-	checksInput
-	if(input_flag){
-
-		file = fopen(input_flag, "r");
-		/*checks if a file was opened correclty*/
-		checksFile(file);
-
-	}
-	else
-		file = stdin;
+	FILE *file = checksInput(input_flag);
 
 	chunk info;	
+	readChunk(&info, file);
 
-	fread(info.id, sizeof(char), 4, file);
-	info.id[4]='\0';	
+	printChunk(&info);
 
 	if(input_flag){
 		fclose(file);
 	}
-
-
-
 
 	return 0;
 }	
