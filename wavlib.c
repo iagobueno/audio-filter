@@ -38,7 +38,7 @@ FILE *checksInput(char *input_flag){
 }
 
 /*reads wav's file chunk*/
-void readChunk(chunk *info, FILE *file){
+void readChunk(chunk_t *info, FILE *file){
 	fread(info->id, sizeof(char), 4, file);
         info->id[4]='\0';
 
@@ -70,13 +70,15 @@ void readChunk(chunk *info, FILE *file){
 	fread(&info->sub2size, sizeof(uint32_t), 1, file);
 
 	info->bytesps=(uint32_t)info->bitsps/8;
+
+	info->samplespc=(uint32_t)info->sub2size/info->blockalign;
 }
 
-void printChunk(chunk *info){
-	printf("riff tag	(4 bytes): %s\n", info->id);
+void printChunk(chunk_t *info){
+	printf("riff tag	(4 bytes): \"%s\"\n", info->id);
 	printf("riff size	(4 bytes): %u\n", info->size);
-	printf("wave tag	(4 bytes): %s\n", info->format);
-	printf("form tag	(4 bytes): %s\n", info->sub1id);
+	printf("wave tag	(4 bytes): \"%s\"\n", info->format);
+	printf("form tag	(4 bytes): \"%s\"\n", info->sub1id);
 	printf("fmt_size	(4 bytes): %u\n", info->sub1size);
 	printf("audio_format	(2 bytes): %u\n", info->audioformat);
 	printf("num_channels	(2 bytes): %u\n", info->nchannels);
@@ -84,7 +86,8 @@ void printChunk(chunk *info){
 	printf("byte_rate	(4 bytes): %u\n", info->byterate);
 	printf("block_align	(2 bytes): %u\n", info->blockalign);
 	printf("bits_per_sample	(2 bytes): %u\n", info->bitsps);
-	printf("data tag	(4 bytes): %s\n", info->sub2id);
+	printf("data tag	(4 bytes): \"%s\"\n", info->sub2id);
 	printf("data size	(4 bytes): %u\n", info->sub2size);
 	printf("bytes per sample	 : %u\n", info->bytesps);
+	printf("samples per channel	 : %u\n", info->samplespc);
 }
