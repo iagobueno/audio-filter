@@ -22,11 +22,14 @@ void checksFile(FILE *file);
 
 void ioFlags(char **, char **, int, char  **);
 
-/*checks if the input comes from stdin or by flag*/
-FILE *checksInput(char *);
+/*returns a file that points to the flag argument or to stdin*/
+FILE *checksInput(char *input_flag);
+
+/*returns a file that points to the flag argument or to stdout*/
+FILE *checksOutput(char *output_flag);
 
 void readChunk(chunk_t *info, FILE *file);
 
-void printChunk(chunk_t *info);
+void printChunk(chunk_t *info, FILE *file);
 
 #endif

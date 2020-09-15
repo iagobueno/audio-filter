@@ -9,16 +9,18 @@ int main(int argc, char **argv){
 	char *input_flag=NULL, *output_flag=NULL;
 	ioFlags(&input_flag, &output_flag, argc, argv);
 
-	FILE *file = checksInput(input_flag);
+	FILE *input = checksInput(input_flag);
+	FILE *output = checksOutput(output_flag);
 
-	chunk info;	
-	readChunk(&info, file);
+	chunk_t info;	
+	readChunk(&info, input);
+	printChunk(&info, output);
 
-	printChunk(&info);
+	if(input_flag)
+		fclose(input);
 
-	if(input_flag){
-		fclose(file);
-	}
+	if(output_flag)
+		fclose(output);
 
 	return 0;
 }	

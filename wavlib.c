@@ -24,7 +24,7 @@ void ioFlags(char **input_flag, char **output_flag, int argc, char **argv){
 	
 }
 
-/*checks if the input comes from stdin or by flag*/
+/*returns a file that points to the flag argument or to stdin*/
 FILE *checksInput(char *input_flag){
 	FILE *file=NULL;
 	if(input_flag)
@@ -35,6 +35,19 @@ FILE *checksInput(char *input_flag){
 	checksFile(file);
 
 	return file;
+}
+
+/*returns a file that points to the flag argument or to stdout*/
+FILE *checksOutput(char *output_flag){
+        FILE *file=NULL;
+        if(output_flag)
+                file = fopen(output_flag, "w");
+        else
+                file = stdout;
+
+        checksFile(file);
+
+        return file;
 }
 
 /*reads wav's file chunk*/
@@ -74,20 +87,20 @@ void readChunk(chunk_t *info, FILE *file){
 	info->samplespc=(uint32_t)info->sub2size/info->blockalign;
 }
 
-void printChunk(chunk_t *info){
-	printf("riff tag	(4 bytes): \"%s\"\n", info->id);
-	printf("riff size	(4 bytes): %u\n", info->size);
-	printf("wave tag	(4 bytes): \"%s\"\n", info->format);
-	printf("form tag	(4 bytes): \"%s\"\n", info->sub1id);
-	printf("fmt_size	(4 bytes): %u\n", info->sub1size);
-	printf("audio_format	(2 bytes): %u\n", info->audioformat);
-	printf("num_channels	(2 bytes): %u\n", info->nchannels);
-	printf("sample_rate	(4 bytes): %u\n", info->samplerate);
-	printf("byte_rate	(4 bytes): %u\n", info->byterate);
-	printf("block_align	(2 bytes): %u\n", info->blockalign);
-	printf("bits_per_sample	(2 bytes): %u\n", info->bitsps);
-	printf("data tag	(4 bytes): \"%s\"\n", info->sub2id);
-	printf("data size	(4 bytes): %u\n", info->sub2size);
-	printf("bytes per sample	 : %u\n", info->bytesps);
-	printf("samples per channel	 : %u\n", info->samplespc);
+void printChunk(chunk_t *info, FILE *file){
+	fprintf(file,"riff tag	(4 bytes): \"%s\"\n", info->id);
+	fprintf(file,"riff size	(4 bytes): %u\n", info->size);
+	fprintf(file,"wave tag	(4 bytes): \"%s\"\n", info->format);
+	fprintf(file,"form tag	(4 bytes): \"%s\"\n", info->sub1id);
+	fprintf(file,"fmt_size	(4 bytes): %u\n", info->sub1size);
+	fprintf(file,"audio_format	(2 bytes): %u\n", info->audioformat);
+	fprintf(file,"num_channels	(2 bytes): %u\n", info->nchannels);
+	fprintf(file,"sample_rate	(4 bytes): %u\n", info->samplerate);
+	fprintf(file,"byte_rate	(4 bytes): %u\n", info->byterate);
+	fprintf(file,"block_align	(2 bytes): %u\n", info->blockalign);
+	fprintf(file,"bits_per_sample	(2 bytes): %u\n", info->bitsps);
+	fprintf(file,"data tag	(4 bytes): \"%s\"\n", info->sub2id);
+	fprintf(file,"data size	(4 bytes): %u\n", info->sub2size);
+	fprintf(file,"bytes per sample	 : %u\n", info->bytesps);
+	fprintf(file,"samples per channel	 : %u\n", info->samplespc);
 }
