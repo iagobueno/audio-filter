@@ -9,17 +9,18 @@ void checksFile(FILE *file){
 }
 
 /*deals the used flags*/
-void ioFlags(char **input_flag, char **output_flag, int argc, char **argv){
+void flags(char **input_flag, char **output_flag, float *level, int argc, char **argv){
 	int flag;
 	opterr=0;
 
-	for(;(flag=getopt(argc,argv,"i:o:")) != -1;){
-		if(flag =='i'){
+	for(;(flag=getopt(argc,argv,"i:o:l:")) != -1;){
+		if(flag =='i')
 			*input_flag=optarg;
-		}
-		if(flag =='o'){
+		if(flag =='o')
 			*output_flag=optarg;
-		}
+		if(flag =='l')
+			*level=atof(optarg);
+		
 	}
 	
 }
@@ -82,11 +83,10 @@ void readChunk(chunk_t *info, FILE *file){
 
 	fread(&info->sub2size, sizeof(uint32_t), 1, file);
 
-	info->bytesps=(uint32_t)info->bitsps/8;
-
-	info->samplespc=(uint32_t)info->sub2size/info->blockalign;
+	rewind(file);
 }
 
+/*prints the chunk from a wav file*/
 void printChunk(chunk_t *info, FILE *file){
 	fprintf(file,"riff tag	(4 bytes): \"%s\"\n", info->id);
 	fprintf(file,"riff size	(4 bytes): %u\n", info->size);
@@ -101,6 +101,28 @@ void printChunk(chunk_t *info, FILE *file){
 	fprintf(file,"bits_per_sample	(2 bytes): %u\n", info->bitsps);
 	fprintf(file,"data tag	(4 bytes): \"%s\"\n", info->sub2id);
 	fprintf(file,"data size	(4 bytes): %u\n", info->sub2size);
-	fprintf(file,"bytes per sample	 : %u\n", info->bytesps);
-	fprintf(file,"samples per channel	 : %u\n", info->samplespc);
+	fprintf(file,"bytes per sample	 : %u\n", info->bitsps/8);
+	fprintf(file,"samples per channel	 : %u\n", info->sub2size/info->blockalign);
+}
+
+/*copy the input's chunk to the output's chunk*/
+void copyChunk(FILE *input, FILE *output){
+	chunk_t info;
+	fread(&info, sizeof(chunk_t), 1, input);
+	fwrite(&info, sizeof(chunk_t), 1, output);
+}
+
+/*adjust the volumn of a wavfile based on a level l*/
+void adjustVolume(FILE *input, FILE *output, float level, int n){
+	int16_t sample;
+	int i;
+
+	if(!level)
+		level=1;
+
+	for(i=0;i<n/2;i++){
+		fread(&sample, sizeof(int16_t), 1, input);
+		sample = sample * level;
+		fwrite(&sample, sizeof(int16_t), 1, output);
+	}
 }

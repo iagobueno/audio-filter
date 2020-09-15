@@ -7,17 +7,20 @@
 int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
-	char *input_flag=NULL, *output_flag=NULL, *level_flag=NULL;
-	flags(&input_flag, &output_flag, &level_flag, argc, argv);
+	char *input_flag=NULL, *output_flag=NULL;
+	float level=1;
+	flags(&input_flag, &output_flag, &level, argc, argv);
 
 	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);
 
-	/*reads and print a chunk from a wavfile*/
 	chunk_t info;	
 	readChunk(&info, input);
-	printChunk(&info, output);
 
+
+	copyChunk(input, output);
+	adjustVolume(input, output, level, info.sub2size);	
+	
 	/*if files were open, they'll closed*/
 	if(input_flag)
 		fclose(input);

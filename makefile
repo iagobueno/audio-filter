@@ -3,11 +3,14 @@
 CC = gcc
 CFLAGS = -Wall
 LIBS = 
-OBJ = wavinfo.o wavlib.o
+OBJ = wavlib.o
 DEPS = wavlib.h
 
+wavvol: wavvol.o wavlib.o
+	$(CC) wavvol.o $(OBJ) -o wavvol
+
 wavinfo: wavinfo.o wavlib.o
-	$(CC) $(OBJ) -o wavinfo
+	$(CC) wavinf.o $(OBJ) -o wavinfo
 
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -c -o $@ $<
