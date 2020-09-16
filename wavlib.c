@@ -9,7 +9,7 @@ void checksFile(FILE *file){
 }
 
 /*deals the used flags*/
-void flags(char **input_flag, char **output_flag, float *level, int argc, char **argv){
+void flags(char **input_flag, char **output_flag, double *level, int argc, char **argv){
 	int flag;
 	opterr=0;
 
@@ -112,17 +112,57 @@ void copyChunk(FILE *input, FILE *output){
 	fwrite(&info, sizeof(chunk_t), 1, output);
 }
 
+/*finds the greatest value into a array*/
+int16_t findGreatest(int16_t *array, int size){
+	int i;
+	int16_t great;
+
+	for(i=0, great=0;i<size;i++){
+		if(array[i] < 0)
+			array[i] = array[i] * (-1);
+		if(array[i] > great)
+			great=array[i];
+	}
+
+	return great;
+}
+
+/*checks if a sample has passed the wave limit and ajust it*/
+int16_t checksSample(int16_t sample, double level){
+
+	double value = sample * level;
+	if(sample > 0){
+		if( value > 32767)
+			return 32767;
+	}
+	else{
+		if( value < -32767)
+			return -32767;
+	}
+
+	return value;
+}
+
+/*checks if level is a acceptable value*/
+double checksLevel(double level){
+	if(!level || level < 0)
+		return 1;
+	if(level > 10)	
+		return 10;
+	return level;
+}
+
 /*adjust the volumn of a wavfile based on a level l*/
-void adjustVolume(FILE *input, FILE *output, float level, int n){
+void adjustVolume(FILE *input, FILE *output, double level, int n){
 	int16_t sample;
 	int i;
 
-	if(!level)
-		level=1;
+	level=checksLevel(level);
 
 	for(i=0;i<n/2;i++){
 		fread(&sample, sizeof(int16_t), 1, input);
-		sample = sample * level;
+
+		sample = checksSample(sample, level);
 		fwrite(&sample, sizeof(int16_t), 1, output);
 	}
 }

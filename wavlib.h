@@ -21,7 +21,7 @@ typedef struct chunk_t chunk_t;
 void checksFile(FILE *file);
 
 /*checks and treat the possibles flags*/
-void flags(char **input_flag, char **output_flag, float *level, int argc, char **argv);
+void flags(char **input_flag, char **output_flag, double *level, int argc, char **argv);
 
 /*returns a file that points to the flag argument or to stdin*/
 FILE *checksInput(char *input_flag);
@@ -39,7 +39,16 @@ void printChunk(chunk_t *info, FILE *file);
 /*copy the input's chunk to the output's chunk*/
 void copyChunk(FILE *input, FILE *output);
 
+/*finds the greatest value into a array*/
+int16_t findGreatest(int16_t *array, int size);
+
+/*checks if a sample has passed the wave limit and ajust it*/
+int16_t checksSample(int16_t sample, double level);
+
+/*checks if level is a acceptable value*/
+double checksLevel(double level);
+
 /*adjust the volumn of a wavfile based on a level l*/
-void adjustVolume(FILE *input, FILE *output, float level, int n);
+void adjustVolume(FILE *input, FILE *output, double level, int n);
 
 #endif
