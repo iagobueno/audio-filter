@@ -1,3 +1,4 @@
+/*GRR20190171 Carlos Iago Bueno*/
 #include"wavlib.h"
 
 /*checks if a file was opened correclty*/
@@ -112,32 +113,17 @@ void copyChunk(FILE *input, FILE *output){
 	fwrite(&info, sizeof(chunk_t), 1, output);
 }
 
-/*finds the greatest value into a array*/
-int16_t findGreatest(int16_t *array, int size){
-	int i;
-	int16_t great;
-
-	for(i=0, great=0;i<size;i++){
-		if(array[i] < 0)
-			array[i] = array[i] * (-1);
-		if(array[i] > great)
-			great=array[i];
-	}
-
-	return great;
-}
-
 /*checks if a sample has passed the wave limit and ajust it*/
 int16_t checksSample(int16_t sample, double level){
 
 	double value = sample * level;
 	if(sample > 0){
-		if( value > 32767)
-			return 32767;
+		if( value > MAX)
+			return MAX;
 	}
 	else{
-		if( value < -32767)
-			return -32767;
+		if( value < MIN)
+			return MIN;
 	}
 
 	return value;
@@ -165,4 +151,58 @@ void adjustVolume(FILE *input, FILE *output, double level, int n){
 		sample = checksSample(sample, level);
 		fwrite(&sample, sizeof(int16_t), 1, output);
 	}
+}
+
+/*finds the greatest value into a array*/
+int16_t findGreatest(int16_t *array, int size){
+	int i;
+	int16_t great, aux;
+
+	for(i=0, great=0;i<size;i++){
+		if(array[i] < 0)
+			aux = array[i] * (-1);
+		else
+			aux = array[i];
+		if(aux > great)
+			great=array[i];
+	}
+
+	return great;
+}
+
+/*finds a constant that approaches the greatest value to MAX*/
+float findConstant(int16_t great){
+	float c;
+	for(c=1.001; great*c < MAX;c+=0.001);
+
+	return (c-0.001);
+		
+}
+
+/*normaziles a wavile*/
+void normalizes(FILE *input, FILE *output, int n){
+
+	int16_t *sample;
+	sample = malloc( (n/2) * sizeof(int16_t));
+	if(!sample){
+		perror("memory wasn't reserved correctly");
+		exit(2);
+	}
+
+        int i;
+
+        for(i=0;i<n/2;i++)
+                fread(&sample[i], sizeof(int16_t), 1, input);
+
+	int16_t great=findGreatest(sample, n/2);
+	float c=findConstant(great);	
+
+
+        for(i=0;i<n/2;i++){
+                sample[i] = (int16_t)(c * sample[i]);
+                fwrite(&sample[i], sizeof(int16_t), 1, output);
+        }	
+
+	free(sample);
+	sample=NULL;
 }

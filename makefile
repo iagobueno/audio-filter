@@ -6,6 +6,9 @@ LIBS =
 OBJ = wavlib.o
 DEPS = wavlib.h
 
+wavnorm: wavnorm.o wavlib.o
+	$(CC) wavnorm.o $(OBJ) -o wavnorm
+
 wavvol: wavvol.o wavlib.o
 	$(CC) wavvol.o $(OBJ) -o wavvol
 
@@ -15,7 +18,7 @@ wavinfo: wavinfo.o wavlib.o
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 clean:
-	-rm -f $(OBJ)
+	-rm -f *.o
 
 purge:
-	-rm -f wavinfo
+	-rm -f *.o wavinfo wavvol

@@ -1,5 +1,8 @@
+/*GRR20190171 Carlos Iago Bueno*/
 #ifndef WAVLIB_H
 #define WAVLIB_H
+#define MAX 32767
+#define MIN -32767
 #include<ctype.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -39,9 +42,6 @@ void printChunk(chunk_t *info, FILE *file);
 /*copy the input's chunk to the output's chunk*/
 void copyChunk(FILE *input, FILE *output);
 
-/*finds the greatest value into a array*/
-int16_t findGreatest(int16_t *array, int size);
-
 /*checks if a sample has passed the wave limit and ajust it*/
 int16_t checksSample(int16_t sample, double level);
 
@@ -50,5 +50,14 @@ double checksLevel(double level);
 
 /*adjust the volumn of a wavfile based on a level l*/
 void adjustVolume(FILE *input, FILE *output, double level, int n);
+
+/*finds the greatest value into a array*/
+int16_t findGreatest(int16_t *array, int size);
+
+/*finds a constant that approaches the greatest value to MAX*/
+float findConstant(int16_t great);
+
+/*normaziles a wavile*/
+void normalizes(FILE *input, FILE *output, int n);
 
 #endif
