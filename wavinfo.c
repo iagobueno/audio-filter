@@ -1,3 +1,4 @@
+/*GRR20190171 Carlos Iago Bueno*/
 #include<ctype.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -7,8 +8,8 @@
 int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
-	char *input_flag=NULL, *output_flag=NULL, *level_flag=NULL;
-	flags(&input_flag, &output_flag, &level_flag, argc, argv);
+	char *input_flag=NULL, *output_flag=NULL;
+	flags(&input_flag, &output_flag, NULL, NULL, argc, argv);
 
 	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);

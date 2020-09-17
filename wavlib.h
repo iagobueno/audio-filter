@@ -24,7 +24,7 @@ typedef struct chunk_t chunk_t;
 void checksFile(FILE *file);
 
 /*checks and treat the possibles flags*/
-void flags(char **input_flag, char **output_flag, double *level, int argc, char **argv);
+void flags(char **input_flag, char **output_flag, double *level, double *delay, int argc, char **argv);
 
 /*returns a file that points to the flag argument or to stdin*/
 FILE *checksInput(char *input_flag);
@@ -59,5 +59,9 @@ float findConstant(int16_t great);
 
 /*normaziles a wavile*/
 void normalizes(FILE *input, FILE *output, int n);
+
+void reverses(FILE *input, FILE *output, int n);
+
+void echoes(FILE *input, FILE *output, double level, double delay, int n);
 
 #endif

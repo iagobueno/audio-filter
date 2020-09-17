@@ -10,7 +10,7 @@ int main(int argc, char **argv){
 	/*checks the possibles flags*/
 	char *input_flag=NULL, *output_flag=NULL;
 	double level=1;
-	flags(&input_flag, &output_flag, &level, argc, argv);
+	flags(&input_flag, &output_flag, NULL, NULL, argc, argv);
 
 	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);

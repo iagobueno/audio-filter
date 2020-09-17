@@ -9,8 +9,8 @@ int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
 	char *input_flag=NULL, *output_flag=NULL;
-	double level=1;
-	flags(&input_flag, &output_flag, &level, NULL, argc, argv);
+	double level=1, delay=1;
+	flags(&input_flag, &output_flag, &level, &delay, argc, argv);
 
 	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);
@@ -18,15 +18,15 @@ int main(int argc, char **argv){
 	chunk_t info;	
 	readChunk(&info, input);
 
-
 	copyChunk(input, output);
-	adjustVolume(input, output, level, info.sub2size);	
+	echoes(input, output, level, delay, info.sub2size);	
 	
 	/*if files were open, they'll closed*/
 	if(input_flag)
 		fclose(input);
 	if(output_flag)
 		fclose(output);
+
 
 	return 0;
 }	

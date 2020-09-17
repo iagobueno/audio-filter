@@ -10,17 +10,19 @@ void checksFile(FILE *file){
 }
 
 /*deals the used flags*/
-void flags(char **input_flag, char **output_flag, double *level, int argc, char **argv){
+void flags(char **input_flag, char **output_flag, double *level, double *delay, int argc, char **argv){
 	int flag;
 	opterr=0;
 
-	for(;(flag=getopt(argc,argv,"i:o:l:")) != -1;){
+	for(;(flag=getopt(argc,argv,"i:o:l:t:")) != -1;){
 		if(flag =='i')
 			*input_flag=optarg;
 		if(flag =='o')
 			*output_flag=optarg;
 		if(flag =='l')
 			*level=atof(optarg);
+		if(flag =='t')
+			*delay=atof(optarg);
 		
 	}
 	
@@ -205,4 +207,52 @@ void normalizes(FILE *input, FILE *output, int n){
 
 	free(sample);
 	sample=NULL;
+}
+
+void reverses(FILE *input, FILE *output, int n){
+
+	int16_t *sample;
+        sample = malloc( (n/2) * sizeof(int16_t));
+        if(!sample){
+                perror("memory wasn't reserved correctly");
+                exit(2);
+        }
+
+	int i;
+
+        for(i=0;i<n/2;i++)
+                fread(&sample[i], sizeof(int16_t), 1, input);
+
+	for(i=n/2;i>0;i--)
+		fwrite(&sample[i], sizeof(int16_t), 1, output);
+
+	free(sample);
+        sample=NULL;
+}
+
+void echoes(FILE *input, FILE *output, double level, double delay, int n){
+	
+	int16_t *sample;
+        sample = malloc( (n/2) * sizeof(int16_t));
+        if(!sample){
+                perror("memory wasn't reserved correctly");
+                exit(2);
+        }
+
+	int i;
+	for(i=0;i<n/2;i++)
+                fread(&sample[i], sizeof(int16_t), 1, input);
+
+	for(i=0;i<delay;i++)
+                fwrite(&sample[i], sizeof(int16_t), 1, output);
+
+	for(i=delay;i<n/2;i++){
+		int index = (int) i - delay*100;
+                sample[i] = (int16_t)(sample[i] + (level * sample[index]));
+                fwrite(&sample[i], sizeof(int16_t), 1, output);
+        }
+
+	free(sample);
+        sample=NULL;
+
 }
