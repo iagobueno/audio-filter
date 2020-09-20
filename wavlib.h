@@ -54,8 +54,10 @@ double checksLevel(double level, double standart, double lower, double higher);
 /*finds the greatest value into a array*/
 int16_t findGreatest(int16_t *array, int size);
 
+/*open n files*/
 FILE **openFiles(int n, char **argv);
 
+/*returns the numbers of files, disregarding the files that cames from flag*/
 int numbersOfFiles(FILE *output, int argc);
 
 #endif

@@ -39,6 +39,11 @@ int main(int argc, char **argv){
 
 	chunk_t *info;
 	info = malloc( n * sizeof(chunk_t));
+	/*checks if memory was reserved correctly*/
+        if(!info){
+                perror("memory wasn't reserved correctly");
+                exit(2);
+        }
 
 	int i;
 	for(i=0;i<n;i++){
@@ -64,6 +69,9 @@ int main(int argc, char **argv){
 
 	for(i=0;i<n;i++)
 		fclose(files[i]);
+
+	free(info);
+	info = NULL;
 
 	return 0;
 }	

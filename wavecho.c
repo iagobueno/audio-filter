@@ -18,6 +18,7 @@ void echoes(FILE *input, FILE *output, double level, double delay, int n){
 	for(i=0;i<n/2;i++)
                 fread(&sample[i], sizeof(int16_t), 1, input);
 
+	/*checks if the value is valid*/
 	level=checksLevel(level, 0.5, 0, 1);
 	delay*=100;
 

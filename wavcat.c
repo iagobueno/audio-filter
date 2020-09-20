@@ -46,6 +46,7 @@ int main(int argc, char **argv){
 	int n = numbersOfFiles(output,argc); 
 	FILE **files = openFiles(n, argv);
 
+	/*this header aux will help us calculate new values to the output's header*/
 	chunk_t aux;	
 	readChunk(&aux, files[0]);
 
@@ -55,14 +56,23 @@ int main(int argc, char **argv){
 
 	chunk_t *info;
 	info = malloc( n * sizeof(chunk_t));
+	/*checks if memory was reserved correctly*/
+        if(!info){
+                perror("memory wasn't reserved correctly");
+                exit(2);
+        }
 
 	int i;
 	for(i=0;i<n;i++){
+
 		readChunk(&info[i], files[i]);
+
+		/*sums the header's sizes to the output's*/
 		aux.size = aux.size + info[i].size;
 		aux.sub2size = aux.sub2size + info[i].sub2size;
 	}
 
+	/*writes the output's header*/
 	fwrite(&aux, sizeof(chunk_t), 1, output);
 	concatFiles(files, output, info, n);
 	
@@ -70,6 +80,11 @@ int main(int argc, char **argv){
 	if(output_flag)
 		fclose(output);
 
+	for(i=0;i<n;i++)
+		fclose(files[i]);
+
+	free(info);
+	info = NULL;
 
 	return 0;
 }	

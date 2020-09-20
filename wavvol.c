@@ -12,6 +12,7 @@ void adjustVolume(FILE *input, FILE *output, double level, int n){
 	int i;
 	double value;
 
+	/*checks if the value is valid*/
 	level=checksLevel(level, 1, 0, 10);
 
 	for(i=0;i<n/2;i++){
@@ -19,6 +20,7 @@ void adjustVolume(FILE *input, FILE *output, double level, int n){
 
 		value = sample * level;
 		sample = checksSample(value);
+
 		fwrite(&sample, sizeof(int16_t), 1, output);
 	}
 }

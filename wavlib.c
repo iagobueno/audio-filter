@@ -108,12 +108,15 @@ int16_t findGreatest(int16_t *array, int size){
 	return great;
 }
 
+/*open n files*/
 FILE **openFiles(int n, char **argv){
 
 	FILE **files = malloc( n * sizeof(FILE*));
 
 	int i, j;
 	for(i=0, j=1;i<n;i++, j++){
+
+		/*ignore the files that cames from the -o flag*/
 		if(!strcmp(argv[j],"-o"))
 			j+=2;
 
@@ -124,6 +127,7 @@ FILE **openFiles(int n, char **argv){
 	return files;
 }
 
+/*returns the numbers of files, disregarding the files that cames from flags*/
 int numbersOfFiles(FILE *output, int argc){
 	if(output == stdout)
 		return argc-1;
