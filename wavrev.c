@@ -5,8 +5,8 @@
 #include<unistd.h>
 #include"wavlib.h"
 
-void echoes(FILE *input, FILE *output, double level, double delay, int n){
-	
+void reverses(FILE *input, FILE *output, int n){
+
 	int16_t *sample;
         sample = malloc( (n/2) * sizeof(int16_t));
         if(!sample){
@@ -15,17 +15,12 @@ void echoes(FILE *input, FILE *output, double level, double delay, int n){
         }
 
 	int i;
-	for(i=0;i<n/2;i++)
+
+        for(i=0;i<n/2;i++)
                 fread(&sample[i], sizeof(int16_t), 1, input);
 
-	level=checksLevel(level, 0.5, 0, 1);
-	delay*=100;
-
-	for(i=delay;i<n/2;i++){
-		int index = (int) (i - (delay));
-                sample[i] = (int16_t)(sample[i] + (level * sample[index]));
-                fwrite(&sample[i], sizeof(int16_t), 1, output);
-        }
+	for(i=n/2;i>0;i--)
+		fwrite(&sample[i], sizeof(int16_t), 1, output);
 
 	free(sample);
         sample=NULL;
@@ -35,8 +30,7 @@ int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
 	char *input_flag=NULL, *output_flag=NULL;
-	double level=1, delay=1;
-	flags(&input_flag, &output_flag, &level, &delay, argc, argv);
+	flags(&input_flag, &output_flag, NULL, NULL, argc, argv);
 
 	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);
@@ -45,7 +39,7 @@ int main(int argc, char **argv){
 	readChunk(&info, input);
 
 	copyChunk(input, output);
-	echoes(input, output, level, delay, info.sub2size);	
+	reverses(input, output, info.sub2size);	
 	
 	/*if files were open, they'll closed*/
 	if(input_flag)

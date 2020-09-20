@@ -5,6 +5,24 @@
 #include<unistd.h>
 #include"wavlib.h"
 
+
+/*adjust the volumn of a wavfile based on a level l*/
+void adjustVolume(FILE *input, FILE *output, double level, int n){
+	int16_t sample;
+	int i;
+	double value;
+
+	level=checksLevel(level, 1, 0, 10);
+
+	for(i=0;i<n/2;i++){
+		fread(&sample, sizeof(int16_t), 1, input);
+
+		value = sample * level;
+		sample = checksSample(value);
+		fwrite(&sample, sizeof(int16_t), 1, output);
+	}
+}
+
 int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
@@ -17,7 +35,6 @@ int main(int argc, char **argv){
 
 	chunk_t info;	
 	readChunk(&info, input);
-
 
 	copyChunk(input, output);
 	adjustVolume(input, output, level, info.sub2size);	

@@ -3,20 +3,27 @@
 #define WAVLIB_H
 #define MAX 32767
 #define MIN -32767
-#include<ctype.h>
 #include<stdio.h>
+#include<ctype.h>
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
 #include<inttypes.h>
 
 struct chunk_t{
-	char id[5];
-	char format[5];
-	char sub1id[5];
-	char sub2id[5];
-	uint16_t audioformat, nchannels, blockalign, bitsps;
-	uint32_t size, sub1size, samplerate, byterate, sub2size;
+	char id[4];
+	uint32_t size;
+	char format[4];
+	char sub1id[4];
+	uint32_t sub1size;
+	uint16_t audioformat;
+	uint16_t nchannels;
+	uint32_t samplerate;
+	uint32_t byterate;
+	uint16_t blockalign;
+	uint16_t bitsps;
+	char sub2id[4];
+	uint32_t sub2size;
 };
 typedef struct chunk_t chunk_t;
 
@@ -32,36 +39,23 @@ FILE *checksInput(char *input_flag);
 /*returns a file that points to the flag argument or to stdout*/
 FILE *checksOutput(char *output_flag);
 
+/*reads a chunk of a wavfile and turns it printable*/
 void readChunk(chunk_t *info, FILE *file);
-
-void writeChunk(chunk_t *info, FILE *file);
-
-/*prints the chunk from a wav file*/
-void printChunk(chunk_t *info, FILE *file);
 
 /*copy the input's chunk to the output's chunk*/
 void copyChunk(FILE *input, FILE *output);
 
 /*checks if a sample has passed the wave limit and ajust it*/
-int16_t checksSample(int16_t sample, double level);
+int16_t checksSample(double sample);
 
 /*checks if level is a acceptable value*/
-double checksLevel(double level);
-
-/*adjust the volumn of a wavfile based on a level l*/
-void adjustVolume(FILE *input, FILE *output, double level, int n);
+double checksLevel(double level, double standart, double lower, double higher);
 
 /*finds the greatest value into a array*/
 int16_t findGreatest(int16_t *array, int size);
 
-/*finds a constant that approaches the greatest value to MAX*/
-float findConstant(int16_t great);
+FILE **openFiles(int n, char **argv);
 
-/*normaziles a wavile*/
-void normalizes(FILE *input, FILE *output, int n);
-
-void reverses(FILE *input, FILE *output, int n);
-
-void echoes(FILE *input, FILE *output, double level, double delay, int n);
+int numbersOfFiles(FILE *output, int argc);
 
 #endif

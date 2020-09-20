@@ -5,30 +5,41 @@
 #include<unistd.h>
 #include"wavlib.h"
 
-void echoes(FILE *input, FILE *output, double level, double delay, int n){
+void amplifyStereo(FILE *input, FILE *output, double level, int n){
 	
-	int16_t *sample;
-        sample = malloc( (n/2) * sizeof(int16_t));
+	int16_t *sample, *sample2;
+	sample = malloc( (n/4) * sizeof(int16_t));
         if(!sample){
                 perror("memory wasn't reserved correctly");
                 exit(2);
         }
 
-	int i;
-	for(i=0;i<n/2;i++)
-                fread(&sample[i], sizeof(int16_t), 1, input);
-
-	level=checksLevel(level, 0.5, 0, 1);
-	delay*=100;
-
-	for(i=delay;i<n/2;i++){
-		int index = (int) (i - (delay));
-                sample[i] = (int16_t)(sample[i] + (level * sample[index]));
-                fwrite(&sample[i], sizeof(int16_t), 1, output);
+	sample2 = malloc( (n/4) * sizeof(int16_t));
+        if(!sample2){
+                perror("memory wasn't reserved correctly");
+                exit(2);
         }
 
-	free(sample);
-        sample=NULL;
+	int i;
+	for(i=0;i<n/2;i++){
+                fread(&sample[i], sizeof(int16_t), 1, input);
+                fread(&sample2[i], sizeof(int16_t), 1, input);
+	}
+
+	double value;
+	int16_t diff;	
+	for(i=0;i<n/4;i++){
+		diff = sample[i] - sample2[i]; /*calculates diff*/
+
+		value = (sample[i] + level * diff);
+		sample[i] = checksSample(value); /*checks if value didn't pass the wave limit*/
+
+		value = (sample2[i] - level * diff);
+		sample2[i] = checksSample(value);
+
+                fwrite(&sample[i], sizeof(int16_t), 1, output);
+                fwrite(&sample2[i], sizeof(int16_t), 1, output);
+        }
 }
 
 int main(int argc, char **argv){
@@ -45,7 +56,7 @@ int main(int argc, char **argv){
 	readChunk(&info, input);
 
 	copyChunk(input, output);
-	echoes(input, output, level, delay, info.sub2size);	
+	amplifyStereo(input, output, level, info.sub2size);	
 	
 	/*if files were open, they'll closed*/
 	if(input_flag)

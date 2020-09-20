@@ -24,25 +24,52 @@ void printChunk(chunk_t *info, FILE *file){
         fprintf(file,"samples per channel	 : %u\n", info->sub2size/info->blockalign);
 }
 
+void concatFiles(FILE **files, FILE *output, chunk_t *info, int n){
+	int16_t sample;	
+
+	int i, j;
+	for(j=0; j<n ; j++){
+		for(i=0; i <info[0].sub2size/2; i++){
+			fread(&sample, sizeof(int16_t), 1, files[j]);
+			fwrite(&sample, sizeof(int16_t), 1, output);
+		}
+	}
+}
+
 int main(int argc, char **argv){
 
 	/*checks the possibles flags*/
-	char *input_flag=NULL, *output_flag=NULL;
-	flags(&input_flag, &output_flag, NULL, NULL, argc, argv);
+	char *output_flag=NULL;
+	flags(NULL, &output_flag, NULL, NULL, argc, argv);
 
-	FILE *input = checksInput(input_flag);
 	FILE *output = checksOutput(output_flag);
+	int n = numbersOfFiles(output,argc); 
+	FILE **files = openFiles(n, argv);
 
-	/*reads and print a chunk from a wavfile*/
-	chunk_t info;	
-	readChunk(&info, input);
-	printChunk(&info, output);
+	chunk_t aux;	
+	readChunk(&aux, files[0]);
 
+	aux.size = 0;
+	aux.sub2size = 0;
+	rewind(files[0]);
+
+	chunk_t *info;
+	info = malloc( n * sizeof(chunk_t));
+
+	int i;
+	for(i=0;i<n;i++){
+		readChunk(&info[i], files[i]);
+		aux.size = aux.size + info[i].size;
+		aux.sub2size = aux.sub2size + info[i].sub2size;
+	}
+
+	fwrite(&aux, sizeof(chunk_t), 1, output);
+	concatFiles(files, output, info, n);
+	
 	/*if files were open, they'll closed*/
-	if(input_flag)
-		fclose(input);
 	if(output_flag)
 		fclose(output);
+
 
 	return 0;
 }	
