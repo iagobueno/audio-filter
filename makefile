@@ -2,9 +2,7 @@
 
 CC = gcc
 CFLAGS = -Wall
-LIBS =
 OBJ = wavlib.o
-DEPS = wavli.h
 
 all: wavlib.o wavinfo wavvol wavnorm wavecho wavrev wavwide wavcat wavmix
 

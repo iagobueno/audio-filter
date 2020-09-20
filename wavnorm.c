@@ -3,6 +3,7 @@
 #include<stdlib.h>
 
 /*finds a constant that approaches the greatest value to MAX*/
+/*MAX = 32767*/
 float findConstant(int16_t great){
 	float c;
 	for(c=1.001; great*c < MAX;c+=0.001);
@@ -25,6 +26,8 @@ void normalizes(FILE *input, FILE *output, int n){
         for(i=0;i<n/2;i++)
                 fread(&sample[i], sizeof(int16_t), 1, input);
 
+	/*finds the greatest sample of an array and the constant*/
+	/*that approaches the greatest value to 32767*/
 	int16_t great=findGreatest(sample, n/2);
 	float c=findConstant(great);	
 

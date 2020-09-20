@@ -2,6 +2,7 @@
 #include"wavlib.h"
 #include<stdlib.h>
 
+/**/
 void amplifyStereo(FILE *input, FILE *output, double level, int n){
 	
 	int16_t *sample, *sample2;

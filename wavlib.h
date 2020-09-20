@@ -4,10 +4,6 @@
 #define MAX 32767
 #define MIN -32767
 #include<stdio.h>
-#include<ctype.h>
-#include<stdlib.h>
-#include<unistd.h>
-#include<string.h>
 #include<inttypes.h>
 
 struct chunk_t{

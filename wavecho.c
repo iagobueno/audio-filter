@@ -17,6 +17,7 @@ void echoes(FILE *input, FILE *output, double level, double delay, int n){
 
 	/*checks if the value is valid*/
 	level=checksLevel(level, 0.5, 0, 1);
+	/*adjust delay*/
 	delay*=100;
 
 	for(i=delay;i<n/2;i++){

@@ -80,6 +80,9 @@ int main(int argc, char **argv){
 	for(i=0;i<n;i++)
 		fclose(files[i]);
 
+	free(files);
+	files = NULL;
+
 	free(info);
 	info = NULL;
 

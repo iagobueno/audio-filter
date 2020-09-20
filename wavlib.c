@@ -1,5 +1,8 @@
 /*GRR20190171 Carlos Iago Bueno*/
 #include"wavlib.h"
+#include<stdlib.h>
+#include<string.h>
+#include<unistd.h>
 
 /*checks if a file was opened correclty*/
 void checksFile(FILE *file){

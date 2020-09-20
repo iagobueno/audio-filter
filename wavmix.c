@@ -30,6 +30,7 @@ int main(int argc, char **argv){
 	int n = numbersOfFiles(output,argc); 
 	FILE **files = openFiles(n, argv);
 
+	/*this header aux will help us calculate new values to the output's header*/
 	chunk_t aux;	
 	readChunk(&aux, files[0]);
 	rewind(files[0]);
@@ -51,6 +52,7 @@ int main(int argc, char **argv){
 			exit(1);
 		}
 
+		/*we need the gratest size and subsize to output's headear*/
 		if(info[i].size > aux.size){
 			aux.size = info[i].size;	
 			aux.sub2size = info[i].sub2size;
@@ -66,6 +68,9 @@ int main(int argc, char **argv){
 
 	for(i=0;i<n;i++)
 		fclose(files[i]);
+
+	free(files);
+	files = NULL;
 
 	free(info);
 	info = NULL;
