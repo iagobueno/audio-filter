@@ -2,23 +2,40 @@
 
 CC = gcc
 CFLAGS = -Wall
-LIBS = 
+LIBS =
 OBJ = wavlib.o
-DEPS = wavlib.h
+DEPS = wavli.h
+
+all: wavlib.o wavinfo wavvol wavnorm wavecho wavrev wavwide wavcat wavmix
+
+wavmix: wavmix.o wavlib.o
+	$(CC) $(CFLAGS) $(OBJ) wavmix.o -o wavmix
+
+wavcat: wavcat.o wavlib.o
+	$(CC) $(CFLAGS) $(OBJ) wavcat.o -o wavcat
+
+wavwide: wavwide.o wavlib.o
+	$(CC) $(CFLAGS) $(OBJ) wavwide.o -o wavwide
+
+wavrev: wavrev.o wavlib.o
+	$(CC) $(CFLAGS) $(OBJ) wavrev.o -o wavrev
+
+wavecho: wavecho.o wavlib.o
+	$(CC) $(CFLAGS) $(OBJ) wavecho.o -o wavecho
 
 wavnorm: wavnorm.o wavlib.o
-	$(CC) wavnorm.o $(OBJ) -o wavnorm
+	$(CC) $(CFLAGS) $(OBJ) wavnorm.o -o wavnorm
 
 wavvol: wavvol.o wavlib.o
-	$(CC) wavvol.o $(OBJ) -o wavvol
+	$(CC) $(CFLAGS) $(OBJ) wavvol.o -o wavvol
 
 wavinfo: wavinfo.o wavlib.o
-	$(CC) wavinf.o $(OBJ) -o wavinfo
+	$(CC) $(CFLAGS) $(OBJ) wavinfo.o -o wavinfo
 
-%.o: %.c $(DEPS)
-	$(CC) $(CFLAGS) -c -o $@ $<
+wavlib.o: wavlib.c wavlib.h
+
 clean:
 	-rm -f *.o
 
 purge:
-	-rm -f *.o wavinfo wavvol
+	-rm -f *.o wavinfo wavvol wavnorm wavrev wavecho wavwide wavcat wavmix

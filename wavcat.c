@@ -1,9 +1,6 @@
 /*GRR20190171 Carlos Iago Bueno*/
-#include<ctype.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
 #include"wavlib.h"
+#include<stdlib.h>
 
 /*prints the chunk from a wav file*/
 void printChunk(chunk_t *info, FILE *file){

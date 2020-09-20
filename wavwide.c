@@ -1,9 +1,6 @@
 /*GRR20190171 Carlos Iago Bueno*/
-#include<ctype.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
 #include"wavlib.h"
+#include<stdlib.h>
 
 void amplifyStereo(FILE *input, FILE *output, double level, int n){
 	
